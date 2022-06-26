@@ -99,6 +99,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Left,   tagmon,         	{.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_Right,  tagmon,         	{.i = +1 } },
 	{ MODKEY,                       XK_F12,    xrdb,           	{.v = NULL } },
+	{ MODKEY,			XK_i,	   viewprev,		{ .i = -1 } },
+	{ MODKEY|ShiftMask,		XK_i,	   tagtoprev,		{ .i = -1 } },
+	{ MODKEY,			XK_o,	   viewnext,		{ .i = +1 } },
+	{ MODKEY|ShiftMask,		XK_o,	   tagtonext,		{ .i = +1 } },
 	TAGKEYS(                        XK_1,                      	0)
 	TAGKEYS(                        XK_2,                      	1)
 	TAGKEYS(                        XK_3,                      	2)
@@ -109,10 +113,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      	7)
 	TAGKEYS(                        XK_9,                      	8)
 	{ MODKEY|ShiftMask,             XK_End,    quit,           	{0} },
-	{ MODKEY,			XK_i,	   viewprev,		{ .i = -1 } },
-	{ MODKEY,			XK_o,	   viewnext,		{ .i = 1 } },
-	{ MODKEY|ShiftMask,		XK_i,	   tagtoprev,		{ .i = -1 } },
-	{ MODKEY|ShiftMask,		XK_o,	   tagtonext,		{ .i = +1 } },
+
 };
 
 /* button definitions */

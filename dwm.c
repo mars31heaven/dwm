@@ -1229,6 +1229,8 @@ manage(Window w, XWindowAttributes *wa)
 		(unsigned char *) &(c->win), 1);
 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
 	setclientstate(c, NormalState);
+	if(selmon->sel && selmon->sel->isfullscreen && !c->isfloating)
+		setfullscreen(selmon->sel, 0);
 	if (c->mon == selmon)
 		unfocus(selmon->sel, 0);
 	c->mon->sel = c;
@@ -1369,23 +1371,7 @@ unsigned int
 nexttag(void)
 {
 	unsigned int seltag = selmon->tagset[selmon->seltags];
-	unsigned int usedtags = 0;
-	Client *c = selmon->clients;
-
-	if (!c)
-		return seltag;
-
-	/* skip vacant tags */
-	do {
-		usedtags |= c->tags;
-		c = c->next;
-	} while (c);
-
-	do {
-		seltag = seltag == (1 << (LENGTH(tags) - 1)) ? 1 : seltag << 1;
-	} while (!(seltag & usedtags));
-
-	return seltag;
+	return seltag == (1 << (LENGTH(tags) - 1)) ? 1 : seltag << 1;
 }
 
 Client *
@@ -1408,22 +1394,7 @@ unsigned int
 prevtag(void)
 {
 	unsigned int seltag = selmon->tagset[selmon->seltags];
-	unsigned int usedtags = 0;
-	Client *c = selmon->clients;
-	if (!c)
-		return seltag;
-
-	/* skip vacant tags */
-	do {
-		usedtags |= c->tags;
-		c = c->next;
-	} while (c);
-
-	do {
-		seltag = seltag == 1 ? (1 << (LENGTH(tags) - 1)) : seltag >> 1;
-	} while (!(seltag & usedtags));
-
-	return seltag;
+	return seltag == 1 ? (1 << (LENGTH(tags) - 1)) : seltag >> 1;
 }
 
 void
@@ -1896,9 +1867,7 @@ tagtonext(const Arg *arg)
 	if (selmon->sel == NULL)
 		return;
 
-	if ((tmp = nexttag()) == selmon->tagset[selmon->seltags])
-		return;
-
+	tmp = nexttag();
 	tag(&(const Arg){.ui = tmp });
 	view(&(const Arg){.ui = tmp });
 }
@@ -1911,9 +1880,7 @@ tagtoprev(const Arg *arg)
 	if (selmon->sel == NULL)
 		return;
 
-	if ((tmp = prevtag()) == selmon->tagset[selmon->seltags])
-		return;
-
+	tmp = prevtag();
 	tag(&(const Arg){.ui = tmp });
 	view(&(const Arg){.ui = tmp });
 }
@@ -2460,7 +2427,7 @@ viewprev(const Arg *arg)
 {
 	view(&(const Arg){.ui = prevtag()});
 }
- 
+
 Client *
 wintoclient(Window w)
 {
@@ -2641,3 +2608,4 @@ bstackhoriz(Monitor *m) {
 		}
 	}
 }
+
